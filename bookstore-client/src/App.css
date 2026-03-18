@@ -1,0 +1,15 @@
+.bookstore-hero {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.bookstore-subtitle {
+  font-size: 1.05rem;
+}
+
+.book-list-panel {
+  border: 1px solid #dee2e6;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
