@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Toast } from 'bootstrap';
 import { API_BASE_URL } from '../api';
 import { useCart } from '../context/CartContext';
 import type { Book } from '../types/Book';
@@ -11,7 +10,6 @@ function BookDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToCart } = useCart();
-  const toastRef = useRef<HTMLDivElement>(null);
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,12 +50,6 @@ function BookDetailPage() {
     void load();
   }, [id]);
 
-  const showAddedToast = () => {
-    const el = toastRef.current;
-    if (!el) return;
-    Toast.getOrCreateInstance(el).show();
-  };
-
   const handleAddToCart = () => {
     if (!book || quantity < 1) return;
     addToCart({
@@ -66,10 +58,9 @@ function BookDetailPage() {
       unitPrice: book.price,
       quantity,
     });
-    showAddedToast();
-    window.setTimeout(() => {
-      navigate('/cart', { state: { listSnapshot } });
-    }, 500);
+    navigate('/cart', {
+      state: { listSnapshot, showAddedToCartToast: true },
+    });
   };
 
   const handleContinueShopping = () => {
@@ -143,25 +134,6 @@ function BookDetailPage() {
         >
           Continue shopping
         </button>
-      </div>
-
-      <div
-        ref={toastRef}
-        className="toast position-fixed bottom-0 end-0 m-3"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-      >
-        <div className="toast-header">
-          <strong className="me-auto">Bookstore</strong>
-          <button
-            type="button"
-            className="btn-close"
-            data-bs-dismiss="toast"
-            aria-label="Close"
-          />
-        </div>
-        <div className="toast-body">Added to your cart.</div>
       </div>
     </main>
   );

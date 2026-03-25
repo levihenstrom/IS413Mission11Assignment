@@ -1,15 +1,36 @@
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Toast } from 'bootstrap';
 import { useCart } from '../context/CartContext';
 import type { ListSnapshot } from '../types/ListSnapshot';
+
+type CartLocationState = {
+  listSnapshot?: ListSnapshot;
+  showAddedToCartToast?: boolean;
+};
 
 function CartPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const toastRef = useRef<HTMLDivElement>(null);
 
-  const listSnapshot = (
-    location.state as { listSnapshot?: ListSnapshot } | null
-  )?.listSnapshot;
+  const routeState = location.state as CartLocationState | null;
+  const listSnapshot = routeState?.listSnapshot;
+
+  useEffect(() => {
+    if (!routeState?.showAddedToCartToast) {
+      return;
+    }
+    const el = toastRef.current;
+    if (el) {
+      Toast.getOrCreateInstance(el).show();
+    }
+    navigate(location.pathname, {
+      replace: true,
+      state: { listSnapshot: routeState.listSnapshot },
+    });
+  }, [location.pathname, navigate, routeState]);
 
   const total = cart.reduce(
     (sum, item) => sum + item.quantity * item.unitPrice,
@@ -112,6 +133,25 @@ function CartPage() {
         >
           Continue shopping
         </button>
+      </div>
+
+      <div
+        ref={toastRef}
+        className="toast position-fixed bottom-0 end-0 m-3"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div className="toast-header">
+          <strong className="me-auto">Bookstore</strong>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          />
+        </div>
+        <div className="toast-body">Added to your cart.</div>
       </div>
     </main>
   );
