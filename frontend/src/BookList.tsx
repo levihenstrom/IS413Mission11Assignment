@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './api';
 import type { Book } from './types/Book';
+import type { ListSnapshot } from './types/ListSnapshot';
 
 type ApiResponse = {
   books: Book[];
   totalNumBooks: number;
 };
 
-function BookList() {
+type Props = {
+  selectedCategories: string[];
+  locationKey: string;
+  restoreSnapshot?: ListSnapshot | null;
+};
+
+function BookList({ selectedCategories, locationKey, restoreSnapshot }: Props) {
+  const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -16,14 +26,37 @@ function BookList() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
+  const selectedCategoriesKey = useMemo(
+    () => [...selectedCategories].sort().join('|'),
+    [selectedCategories]
+  );
+
+  useEffect(() => {
+    setPageNum(1);
+  }, [selectedCategoriesKey]);
+
+  useEffect(() => {
+    if (!restoreSnapshot) {
+      return;
+    }
+    setPageNum(restoreSnapshot.pageNum);
+    setPageSize(restoreSnapshot.pageSize);
+    setSortTitle(restoreSnapshot.sortTitle);
+  }, [locationKey, restoreSnapshot]);
+
   useEffect(() => {
     const fetchBooks = async () => {
       setIsLoading(true);
       setError('');
 
+      const categoryQuery =
+        selectedCategories.length > 0
+          ? `${selectedCategories.map((c) => `categories=${encodeURIComponent(c)}`).join('&')}&`
+          : '';
+
       try {
         const response = await fetch(
-          `http://localhost:5043/api/books?pageHowMany=${pageSize}&pageNum=${pageNum}&sortByTitle=${sortTitle}`
+          `${API_BASE_URL}/api/books?${categoryQuery}pageHowMany=${pageSize}&pageNum=${pageNum}&sortByTitle=${sortTitle}`
         );
 
         if (!response.ok) {
@@ -42,12 +75,26 @@ function BookList() {
       }
     };
 
-    fetchBooks();
-  }, [pageSize, pageNum, sortTitle]);
+    void fetchBooks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- selectedCategoriesKey covers category changes
+  }, [pageSize, pageNum, sortTitle, selectedCategoriesKey]);
 
   useEffect(() => {
     setTotalPages(Math.ceil(totalItems / pageSize));
   }, [totalItems, pageSize]);
+
+  const buildListSnapshot = (): ListSnapshot => ({
+    pageNum,
+    pageSize,
+    sortTitle,
+    selectedCategories,
+  });
+
+  const goToBook = (book: Book) => {
+    navigate(`/book/${book.bookID}`, {
+      state: { listSnapshot: buildListSnapshot() },
+    });
+  };
 
   const pageButtons = [...Array(totalPages)].map((_, i) => i + 1);
 
@@ -112,7 +159,16 @@ function BookList() {
         books.map((book) => (
           <div className="card shadow-sm border-0 mb-3" key={book.bookID}>
             <div className="card-body">
-              <h5 className="card-title fw-bold mb-3">{book.title}</h5>
+              <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <h5 className="card-title fw-bold mb-0">{book.title}</h5>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-success flex-shrink-0"
+                  onClick={() => goToBook(book)}
+                >
+                  Add to cart
+                </button>
+              </div>
 
               <div className="row g-2">
                 <div className="col-md-6">

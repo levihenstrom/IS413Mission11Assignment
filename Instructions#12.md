@@ -23,4 +23,68 @@ what kind of features are available.
 **Submit a pUbLiC link to the GitHub repository along with your comment about the
 Bootstrap attributes you added via Learning Suite.**
 
+---
+
+## Appendix: Mission #12 grading rubric
+
+Criteria for **Mission #12 Assignment**.
+
+### App compiles and runs
+
+Standard course expectation: the application builds and runs successfully.
+
+### App allows user to filter books
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 20 | The app gives the user the ability to filter books by category. |
+| **Partial** | 10 | Category filtering is in place but does not work as expected. |
+| **No** | 0 | The app is missing the ability to filter by category. |
+
+### Page numbers change with filtering
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 5 | The page numbers adjust with the filtering. |
+| **No** | 0 | The page numbers do not adjust with the filtering. |
+
+### App has cart that persists
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 25 | The app has a cart that persists as the user navigates around the site. |
+| **Partial** | 10 | Parts of the cart are in place, but it is not functioning correctly. |
+| **No** | 0 | The app is missing the cart functionality. |
+
+### Cart page
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 10 | The app has a cart page that shows each line item with the quantity and subtotal, as well as a total. |
+| **Partial** | 5 | The cart page does not update the quantity when the same item is added or the numbers are not working correctly. |
+| **No** | 0 | App is missing a Cart page. |
+
+### Cart summary on home page
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 10 | The app has a functioning cart summary on the home page that has the price **and** quantity. |
+| **Partial** | 5 | The app has a cart summary, but it is not functioning correctly or is missing the quantity. |
+| **No** | 0 | The app is missing a cart summary on the home page. |
+
+### Bootstrap
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 10 | The app uses the Bootstrap Grid for layout and includes two new things from Bootstrap. |
+| **Partial** | 5 | The app uses the Bootstrap Grid, but does not include two new things or vice versa. |
+| **No** | 0 | The app does not use the Bootstrap Grid and is missing the two new things from Bootstrap. |
+
+### Code is clean
+
+| Level | Score | Description |
+| --- | ---: | --- |
+| **Yes** | 10 | Code is readable, with appropriate naming and proper spacing and comments, and the organization of the files is good. |
+| **Partial** | 0 | There are issues with readability or organization. |
+| **No** | 0 | There are significant issues with readability or organization. |
 

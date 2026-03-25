@@ -13,14 +13,28 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BookstoreContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookstoreConnection")));
 
-// Allow the Vite dev server to call this API.
+// Dev: HTTP only, no HTTPS redirect — avoids cert prompts on phones / other devices on the LAN.
+// Any origin in Development so http://<your-LAN-IP>:3000 works without listing every device.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins(
+                      "http://localhost:3000",
+                      "http://127.0.0.1:3000",
+                      "http://localhost:5173",
+                      "http://127.0.0.1:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
