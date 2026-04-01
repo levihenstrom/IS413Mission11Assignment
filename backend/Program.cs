@@ -11,7 +11,7 @@ builder.Services.AddOpenApi();
 
 // Register DbContext with SQLite connection from appsettings.json.
 builder.Services.AddDbContext<BookstoreContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("BookstoreConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookstoreConnection")));
 
 // Dev: HTTP only, no HTTPS redirect — avoids cert prompts on phones / other devices on the LAN.
 // Any origin in Development so http://<your-LAN-IP>:3000 works without listing every device.
