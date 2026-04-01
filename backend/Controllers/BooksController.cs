@@ -66,4 +66,51 @@ public class BooksController(BookstoreContext context) : ControllerBase
 
         return Ok(book);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> AddBook([FromBody] Models.Book newBook)
+    {
+        context.Books.Add(newBook);
+        await context.SaveChangesAsync();
+        return Ok(newBook);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateBook(int id, [FromBody] Models.Book updatedBook)
+    {
+        var existingBook = await context.Books.FindAsync(id);
+        if (existingBook is null)
+        {
+            return NotFound();
+        }
+
+        existingBook.Title = updatedBook.Title;
+        existingBook.Author = updatedBook.Author;
+        existingBook.Publisher = updatedBook.Publisher;
+        existingBook.ISBN = updatedBook.ISBN;
+        existingBook.Classification = updatedBook.Classification;
+        existingBook.Category = updatedBook.Category;
+        existingBook.PageCount = updatedBook.PageCount;
+        existingBook.Price = updatedBook.Price;
+
+        context.Books.Update(existingBook);
+        await context.SaveChangesAsync();
+
+        return Ok(existingBook);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteBook(int id)
+    {
+        var book = await context.Books.FindAsync(id);
+        if (book is null)
+        {
+            return NotFound();
+        }
+
+        context.Books.Remove(book);
+        await context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
