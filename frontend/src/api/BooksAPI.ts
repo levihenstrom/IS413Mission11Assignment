@@ -1,11 +1,12 @@
 import type { Book } from '../types/Book';
+import { API_BASE_URL } from '../api';
 
 interface FetchBooksResponse {
   books: Book[];
   totalNumBooks: number;
 }
 
-const API_URL = 'https://bookstore-henstrom-backend-d3hacbewh7b7hwak.centralus-01.azurewebsites.net/api';
+const API_URL = `${API_BASE_URL}/api/books`;
 
 export const fetchBooks = async (
   pageSize: number,
